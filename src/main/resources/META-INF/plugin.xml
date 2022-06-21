@@ -1,0 +1,26 @@
+<!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
+<idea-plugin>
+    <id>me.bytebeats.plugin.osresource</id>
+    <name>Resource Monitor</name>
+    <vendor email="happychinapc@gmail.com" url="https://github.com/bytebeats">bytebeats</vendor>
+    <version>0.1.0</version>
+    <idea-version since-build="2021.2"/>
+
+    <description><![CDATA[
+    Cpu&Memory Usage Indicator in the status bar.<br/>
+    Also contains actions for performance problems diagnostics.<br/>
+    Note:<br/>
+      -it is painted in a background thread, not EDT, so it will update even when the GUI is stuck<br/>
+      -getting the process cpu usage is a quite expensive operation :(<br/>
+  ]]></description>
+
+    <change-notes><![CDATA[
+    First release.
+    ]]></change-notes>
+
+    <depends>com.intellij.modules.platform</depends>
+
+    <extensions defaultExtensionNs="com.intellij">
+
+    </extensions>
+</idea-plugin>
