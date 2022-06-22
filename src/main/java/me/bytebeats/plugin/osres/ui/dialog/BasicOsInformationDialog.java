@@ -9,7 +9,7 @@ public class BasicOsInformationDialog extends JDialog {
     private JPanel contentPane;
     private JButton buttonOK;
     private JButton buttonCancel;
-    private JLabel osBasicLabel;
+    private JLabel basicOsInfoLabel;
 
     public BasicOsInformationDialog() {
         setContentPane(contentPane);
@@ -30,7 +30,7 @@ public class BasicOsInformationDialog extends JDialog {
 
         // call onCancel() on ESCAPE
         contentPane.registerKeyboardAction(e -> onCancel(), KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
-        osBasicLabel.setText(UsageMonitor.INSTANCE.getOsSummary$resource_monitor().toString());
+        basicOsInfoLabel.setText(UsageMonitor.INSTANCE.getOsSummary$resource_monitor().format());
     }
 
     private void onOK() {

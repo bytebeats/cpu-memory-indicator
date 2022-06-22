@@ -7,11 +7,11 @@ data class OsSummary(
     var availableCores: Int = 0,
     var averageSystemLoad: Double = 0.0,
 ) {
-    override fun toString(): String {
-        return "CPU: name: '$name', arch: '$arch', version: '$version', Cores: $availableCores, system load: ${
+     fun format(): String {
+        return "CPU: name: '$name', arch: '$arch', version: '$version'\navailable cores: '$availableCores', average system load: '${
             "%3.1f".format(
-                averageSystemLoad * 100.0
+                averageSystemLoad
             )
-        }%"
+        }%'"
     }
 }

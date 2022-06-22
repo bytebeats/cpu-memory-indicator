@@ -35,6 +35,8 @@ class UsagePanel(private val project: Project, private val projectName: String =
     CustomStatusBarWidget {
     private lateinit var systemColor: Color
     private lateinit var ideColor: Color
+    private lateinit var memoryColor: Color
+    private lateinit var swapColor: Color
 
     @Volatile
     private var lastBufferedImage: Image? = null
@@ -88,9 +90,12 @@ class UsagePanel(private val project: Project, private val projectName: String =
     }
 
     private fun refreshColors() {
-        systemColor = if (UIUtil.isUnderDarcula()) JBColor.BLUE.darker() else JBColor.CYAN.darker()
+        systemColor = if (UIUtil.isUnderDarcula()) JBColor.CYAN.darker() else JBColor.BLUE.darker()
         ideColor =
-            if (UIUtil.isUnderDarcula()) JBColor.BLUE.darker().darker().darker() else ColorUtil.softer(JBColor.CYAN)
+            if (UIUtil.isUnderDarcula()) JBColor.CYAN.darker().darker().darker() else ColorUtil.softer(JBColor.BLUE)
+
+        memoryColor = if (UIUtil.isUnderDarcula()) JBColor.MAGENTA.darker() else JBColor.PINK.darker()
+        swapColor = if (UIUtil.isUnderDarcula()) JBColor.YELLOW.darker() else JBColor.ORANGE.darker()
     }
 
     override fun getComponent(): JComponent = this
@@ -127,36 +132,57 @@ class UsagePanel(private val project: Project, private val projectName: String =
             val max = 100
             val otherProcessCpuLoad = UsageMonitor.usage.systemCpu - UsageMonitor.usage.processCpu
             val totalBarLength = size.width - insets.left - insets.right - 3
-            val processCpuBarLength = totalBarLength * UsageMonitor.usage.processCpu / max
-            val otherProcessCpuBarLength = totalBarLength * otherProcessCpuLoad / max
 
             val barHeight = size.height.coerceAtLeast(font.size + 2)
-            val yOffset = (size.height - barHeight) / 2
-            val xOffset = insets.left
 
             //background
             g2.color = UIUtil.getPanelBackground()
             g2.fillRect(0, 0, size.width, size.height)
 
+
+            val yOffset = (size.height - barHeight) / 2
+            val xOffset = insets.left
+            //label
+            g2.font = font
+            val message = UsageMonitor.usage.format()
+            val chars = message.toCharArray()
+            val firstCommaIndex = message.indexOf(';')
+            val lastCommaIndex = message.lastIndexOf(';')
+            if (firstCommaIndex >= lastCommaIndex) {
+                return
+            }
+
+            val fontMetrics = g2.fontMetrics
+            val msgWidth = fontMetrics.charsWidth(chars, 0, message.length)
+            val cpuMsgWidth = fontMetrics.charsWidth(chars, 0, firstCommaIndex + 1)
+            val memoryMsgWidth =
+                fontMetrics.charsWidth(chars, firstCommaIndex + 2, lastCommaIndex - firstCommaIndex + 1)
+            val swapMsgWidth = fontMetrics.charsWidth(chars, lastCommaIndex + 2, message.length - lastCommaIndex - 3)
+            val processCpuBarLength = cpuMsgWidth * UsageMonitor.usage.processCpu / max
+            val otherProcessCpuBarLength = cpuMsgWidth * otherProcessCpuLoad / max
+            val memoryBarLength = memoryMsgWidth * UsageMonitor.usage.memory / max
+            val swapBarLength = swapMsgWidth * UsageMonitor.usage.swapSpace / max
             //gauge ide cpu load
             g2.color = ideColor
-            g2.fillRect(xOffset + 1, yOffset, processCpuBarLength.toInt() + 1, barHeight)
+            g2.fillRect(xOffset, yOffset, processCpuBarLength.toInt() + 1, barHeight)
 
             //gauge system cpu load
             g2.color = systemColor
             g2.fillRect(
-                xOffset + processCpuBarLength.toInt() + 1,
+                xOffset + processCpuBarLength.toInt(),
                 yOffset,
-                otherProcessCpuBarLength.toInt() + 1,
+                otherProcessCpuBarLength.toInt(),
                 barHeight
             )
 
-            //label
-            g2.font = font
-            val message = UsageMonitor.usage.format()
+            //gauge memory
+            g2.color = memoryColor
+            g2.fillRect(xOffset + cpuMsgWidth + 2, yOffset, memoryBarLength.toInt() + 1, barHeight)
 
-            val fontMetrics = g2.fontMetrics
-            val msgWidth = fontMetrics.charsWidth(message.toCharArray(), 0, message.length)
+            //gauge swap space
+            g2.color = swapColor
+            g2.fillRect(xOffset + cpuMsgWidth + memoryMsgWidth, yOffset, swapBarLength.toInt() + 1, barHeight)
+
             val msgHeight = fontMetrics.ascent
             UISettings.setupAntialiasing(g2)
 

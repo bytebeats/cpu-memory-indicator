@@ -6,7 +6,7 @@ import java.io.Writer
 import java.lang.management.ManagementFactory
 import java.lang.management.ThreadInfo
 import java.lang.management.ThreadMXBean
-import java.time.LocalDateTime
+import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 
 object ThreadDumper {
@@ -38,7 +38,8 @@ object ThreadDumper {
         try {
             val sb = StringBuilder("\"${tInfo.threadName}\"")
             sb.append(" prio=${tInfo.priority} tid=${tInfo.threadId} nid=0x0 ")
-                .append(readableState(tInfo.threadState))
+                .append(readableState(tInfo.threadState)).append("\n")
+                .append("     java.lang.Thread.State: ").append(tInfo.threadState).append("\n")
             tInfo.lockName?.let {
                 sb.append(" on $it")
             }
@@ -78,7 +79,7 @@ object ThreadDumper {
     private fun dumpThreadInfos(infos: Array<ThreadInfo>, writer: Writer): Array<StackTraceElement>? {
         val sorted = moveEdtToEnd(infos)
         try {
-            writer.write("Generated: ${LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss.SSS"))}\n")
+            writer.write("Generated: ${LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss.SSS"))}\n")
         } catch (ioe: IOException) {
             throw RuntimeException(ioe)
         }

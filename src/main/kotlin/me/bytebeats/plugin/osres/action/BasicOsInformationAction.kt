@@ -5,7 +5,6 @@ import com.intellij.openapi.project.DumbAwareAction
 import me.bytebeats.plugin.osres.ui.dialog.BasicOsInformationDialog
 import java.awt.Dimension
 import java.awt.Toolkit
-import kotlin.system.exitProcess
 
 class BasicOsInformationAction : DumbAwareAction() {
     override fun actionPerformed(e: AnActionEvent) {
@@ -16,6 +15,5 @@ class BasicOsInformationAction : DumbAwareAction() {
         val y = (screenerSize.getHeight() / 2 - dialog.height / 2).toInt()
         dialog.setLocation(x, y)
         dialog.isVisible = true
-        exitProcess(0)
     }
 }
