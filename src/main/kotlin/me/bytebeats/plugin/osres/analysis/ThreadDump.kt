@@ -7,7 +7,7 @@ package me.bytebeats.plugin.osres.analysis
  * @property rawDump
  * @property stackTraces
  */
-data class ThreadDump(private val rawDump: String, private val stackTraces: Array<StackTraceElement>?) {
+data class ThreadDump(val rawDump: String, private val stackTraces: Array<StackTraceElement>?) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false

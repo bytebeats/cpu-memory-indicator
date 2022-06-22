@@ -82,9 +82,9 @@ class UsagePanel(val project: Project, private val projectName: String = project
     }
 
     private fun actionGroup(): DefaultActionGroup {
-        val dumpThreadAction = ActionManager.getInstance().getAction("DumpThread")
+        val dumpThreadAction = ActionManager.getInstance().getAction("DumpIdeThread")
         val frozenUiThreadDumpAction = ActionManager.getInstance().getAction("OpenLastFrozenUiThreadDump")
-        val settingAction = ActionManager.getInstance().getAction("OpenPerformanceWatcherSettings")
+        val settingAction = ActionManager.getInstance().getAction("OpenPerformanceMonitorSettings")
         return DefaultActionGroup(dumpThreadAction, frozenUiThreadDumpAction, settingAction)
     }
 

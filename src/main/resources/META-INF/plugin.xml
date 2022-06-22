@@ -23,4 +23,14 @@
     <extensions defaultExtensionNs="com.intellij">
 
     </extensions>
+    <actions>
+        <action id="DumpIdeThread" class="me.bytebeats.plugin.osres.action.DumpIdeThreadAction" text="Dump IDE Thread"
+                description="Generate IDE's thread dump as scratch"/>
+        <action id="OpenLastFrozenUiThreadDump"
+                class="me.bytebeats.plugin.osres.action.OpenLastFrozenUiThreadDumpAction"
+                text="Open Last Frozen UI Thread Dump" description="Open last frozen UI thread dump"/>
+        <action id="OpenPerformanceMonitorSettings"
+                class="me.bytebeats.plugin.osres.action.OpenPerformanceMonitorSettingsAction"
+                text="Open Performance Monitor Settings" description="Open performance monitor settings"/>
+    </actions>
 </idea-plugin>
