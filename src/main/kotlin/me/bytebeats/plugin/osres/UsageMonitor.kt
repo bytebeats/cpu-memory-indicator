@@ -1,28 +1,28 @@
-package me.bytebeats.plugin.osresource
+package me.bytebeats.plugin.osres
 
 import com.intellij.concurrency.JobScheduler
 import com.intellij.openapi.diagnostic.Logger
 import com.sun.management.OperatingSystemMXBean
-import me.bytebeats.plugin.osresource.model.OsSummary
-import me.bytebeats.plugin.osresource.model.ResourceUsage
+import me.bytebeats.plugin.osres.model.OsSummary
+import me.bytebeats.plugin.osres.model.Usage
 import java.awt.Toolkit
 import java.lang.management.ManagementFactory
 import java.util.concurrent.CopyOnWriteArraySet
 import java.util.concurrent.TimeUnit
 
-object ResourceMonitor {
-    private val logger = Logger.getInstance(ResourceMonitor::class.java)
+object UsageMonitor {
+    private val logger = Logger.getInstance(UsageMonitor::class.java)
     private val osMXBean =
         ManagementFactory.getPlatformMXBean(OperatingSystemMXBean::class.java) as OperatingSystemMXBean
 
-    internal val usage: ResourceUsage = ResourceUsage()
+    internal val usage: Usage = Usage()
     internal lateinit var osSummary: OsSummary
     internal var broken = false
 
     private val scheduledFuture =
         JobScheduler.getScheduler().scheduleWithFixedDelay({ update() }, 1L, 1L, TimeUnit.SECONDS)
 
-    private val usagePanelSet = CopyOnWriteArraySet<ResourceUsagePanel>()
+    private val usagePanelSet = CopyOnWriteArraySet<UsagePanel>()
 
     internal fun update() {
         try {
@@ -69,11 +69,11 @@ object ResourceMonitor {
         }
     }
 
-    fun observe(panel: ResourceUsagePanel) {
+    fun observe(panel: UsagePanel) {
         usagePanelSet.add(panel)
     }
 
-    fun unobserve(panel: ResourceUsagePanel) {
+    fun unobserve(panel: UsagePanel) {
         usagePanelSet.remove(panel)
     }
 }

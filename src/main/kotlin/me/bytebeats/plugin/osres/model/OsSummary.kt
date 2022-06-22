@@ -1,4 +1,4 @@
-package me.bytebeats.plugin.osresource.model
+package me.bytebeats.plugin.osres.model
 
 data class OsSummary(
     val name: String,

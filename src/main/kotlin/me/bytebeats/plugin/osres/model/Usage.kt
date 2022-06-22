@@ -1,16 +1,22 @@
-package me.bytebeats.plugin.osresource.model
+package me.bytebeats.plugin.osres.model
 
-data class ResourceUsage(
+import me.bytebeats.plugin.osres.UsagePanel
+
+data class Usage(
     @Volatile var systemCpu: Double = 0.0,
     @Volatile var processCpu: Double = 0.0,
     @Volatile var memory: Double = 0.0,
     @Volatile var swapSpace: Double = 0.0
 ) {
+
+    fun format(): String =
+        UsagePanel.RESOURCE_USAGE_SAMPLING_FORMATTER.format(processCpu, systemCpu, memory, swapSpace)
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
 
-        other as ResourceUsage
+        other as Usage
 
         if (systemCpu != other.systemCpu) return false
         if (processCpu != other.processCpu) return false
