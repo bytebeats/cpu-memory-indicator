@@ -46,5 +46,8 @@
         <action id="OpenPerformanceMonitorSettings"
                 class="me.bytebeats.plugin.osres.action.OpenPerformanceMonitorSettingsAction"
                 text="Open Performance Monitor Settings" description="Open performance monitor settings"/>
+        <action id="BasicOsInformation" class="me.bytebeats.plugin.osres.action.BasicOsInformationAction"
+                text="Open Basic OS Information"
+                description="Open basic OS information"/>
     </actions>
 </idea-plugin>

@@ -16,16 +16,16 @@ class OpenLastFrozenUiThreadDumpAction : DumbAwareAction() {
             val dir = Paths.get(PathManager.getLogPath())
             try {
                 val lastFilePath = Files.list(dir)
-                    .filter { Files.isDirectory(it) }
-                    .filter { it.fileName.startsWith("threadDumps-frozen-") }
-                    .max { o1, o2 -> (o1.toFile().lastModified() - o2.toFile().lastModified()).toInt() }
+                    .filter { f -> Files.isDirectory(f) }
+                    .filter { f -> f.fileName.startsWith("threadDumps-freeze-") }
+                    .max { f1, f2 -> (f1.toFile().lastModified() - f2.toFile().lastModified()).toInt() }
 
                 if (lastFilePath.isPresent) {
                     val first = Files.list(lastFilePath.get())
                         .filter { it.fileName.startsWith("threadDump-") }
                         .findFirst()
-                    first.ifPresent {
-                        val f = LocalFileSystem.getInstance().findFileByIoFile(it.toFile())
+                    first.ifPresent { path ->
+                        val f = LocalFileSystem.getInstance().findFileByIoFile(path.toFile())
                         if (f != null) {
                             FileEditorManager.getInstance(p).openFile(f, true)
                         }

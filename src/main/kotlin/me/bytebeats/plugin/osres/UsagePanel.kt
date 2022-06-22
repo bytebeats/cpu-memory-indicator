@@ -76,25 +76,6 @@ class UsagePanel(private val project: Project, private val projectName: String =
                     popup.show(RelativePoint(e.component, at))
                 }
             }
-
-            override fun mouseEntered(e: MouseEvent?) {
-                if (e != null) {
-                    val content = JLabel(UsageMonitor.osSummary.toString())
-                    val dimen = content.size
-                    info("dimen: ${dimen.width}, ${dimen.height}")
-                    if (dimen.width < 0 || dimen.height < 0) {
-                        return
-                    }
-                    info("popup")
-                    val at = Point(0, -dimen.height)
-                    JBPopupFactory.getInstance()
-                        .createComponentPopupBuilder(content, null)
-                        .setMovable(true)
-                        .setRequestFocus(true)
-                        .createPopup()
-                        .show(RelativePoint.fromScreen(at))
-                }
-            }
         })
     }
 
@@ -102,7 +83,8 @@ class UsagePanel(private val project: Project, private val projectName: String =
         val dumpThreadAction = ActionManager.getInstance().getAction("DumpIdeThread")
         val frozenUiThreadDumpAction = ActionManager.getInstance().getAction("OpenLastFrozenUiThreadDump")
         val settingAction = ActionManager.getInstance().getAction("OpenPerformanceMonitorSettings")
-        return DefaultActionGroup(dumpThreadAction, frozenUiThreadDumpAction, settingAction)
+        val osBasicAction = ActionManager.getInstance().getAction("BasicOsInformation")
+        return DefaultActionGroup(dumpThreadAction, frozenUiThreadDumpAction, settingAction, osBasicAction)
     }
 
     private fun refreshColors() {

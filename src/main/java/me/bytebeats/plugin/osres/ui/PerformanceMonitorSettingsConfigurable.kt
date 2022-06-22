@@ -1,6 +1,7 @@
 package me.bytebeats.plugin.osres.ui
 
 import com.intellij.openapi.options.Configurable
+import me.bytebeats.plugin.osres.ui.form.PerformanceMonitorForm
 import javax.swing.JComponent
 
 class PerformanceMonitorSettingsConfigurable : Configurable {

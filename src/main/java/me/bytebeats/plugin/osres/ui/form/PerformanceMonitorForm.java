@@ -1,4 +1,4 @@
-package me.bytebeats.plugin.osres.ui;
+package me.bytebeats.plugin.osres.ui.form;
 
 import com.intellij.openapi.util.registry.Registry;
 import com.intellij.openapi.util.registry.RegistryValue;
