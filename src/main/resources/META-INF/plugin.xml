@@ -25,6 +25,17 @@
                                  instance="me.bytebeats.plugin.osres.ui.PerformanceMonitorSettingsConfigurable"/>
         <statusBarWidgetFactory implementation="me.bytebeats.plugin.osres.UsageWidgetFactory" id="UsageWidgetFactory"
                                 order="before memoryUsageWidget"/>
+
+        <notificationGroup displayType="NONE" id="OS Resource Monitor Log"
+                           icon="AllIcons.General.NotificationInfo"
+                           isLogByDefault="true"/>
+        <notificationGroup displayType="BALLOON" id="OS Resource Monitor Balloon"
+                           icon="AllIcons.General.NotificationWarning"
+                           isLogByDefault="true"/>
+        <notificationGroup displayType="TOOL_WINDOW" id="OS Resource Monitor Tool Window"
+                           icon="AllIcons.Plugins.Updated"
+                           toolWindowId="OS Resource Monitor Tool Window"
+                           isLogByDefault="true"/>
     </extensions>
     <actions>
         <action id="DumpIdeThread" class="me.bytebeats.plugin.osres.action.DumpIdeThreadAction" text="Dump IDE Thread"

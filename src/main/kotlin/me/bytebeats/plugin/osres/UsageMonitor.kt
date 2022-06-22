@@ -1,47 +1,49 @@
 package me.bytebeats.plugin.osres
 
 import com.intellij.concurrency.JobScheduler
-import com.intellij.openapi.diagnostic.Logger
 import com.sun.management.OperatingSystemMXBean
 import me.bytebeats.plugin.osres.model.OsSummary
 import me.bytebeats.plugin.osres.model.Usage
+import me.bytebeats.plugin.osres.util.info
 import java.awt.Toolkit
 import java.lang.management.ManagementFactory
 import java.util.concurrent.CopyOnWriteArraySet
 import java.util.concurrent.TimeUnit
 
 object UsageMonitor {
-    private val logger = Logger.getInstance(UsageMonitor::class.java)
     private val osMXBean =
         ManagementFactory.getPlatformMXBean(OperatingSystemMXBean::class.java) as OperatingSystemMXBean
 
-    internal val usage: Usage = Usage()
-    internal lateinit var osSummary: OsSummary
-    internal var broken = false
+    @Volatile
+    internal var usage = Usage()
+
+    @Volatile
+    internal var osSummary: OsSummary = OsSummary()
+    private var broken = false
 
     private val scheduledFuture =
         JobScheduler.getScheduler().scheduleWithFixedDelay({ update() }, 1L, 1L, TimeUnit.SECONDS)
 
     private val usagePanelSet = CopyOnWriteArraySet<UsagePanel>()
 
+    @Synchronized
     internal fun update() {
         try {
             if (usagePanelSet.isEmpty()) return
-            if (!::osSummary.isInitialized) {
-                osSummary = OsSummary(
-                    osMXBean.name,
-                    osMXBean.arch,
-                    osMXBean.version,
-                    osMXBean.availableProcessors,
-                    osMXBean.systemLoadAverage
-                )
-            } else {
-                osSummary.averageSystemLoad = osMXBean.systemLoadAverage
-            }
+            osSummary.name = osMXBean.name
+            osSummary.arch = osMXBean.arch
+            osSummary.version = osMXBean.version
+            osSummary.availableCores = osMXBean.availableProcessors
+            osSummary.averageSystemLoad = osMXBean.systemLoadAverage
+
             usage.systemCpu = osMXBean.systemCpuLoad * 100.0
             usage.processCpu = osMXBean.processCpuLoad * 100.0// this operation took too much time
-            usage.memory = osMXBean.freePhysicalMemorySize / osMXBean.totalPhysicalMemorySize * 100.0
-            usage.swapSpace = osMXBean.freeSwapSpaceSize / osMXBean.totalSwapSpaceSize * 100.0
+            usage.memory = osMXBean.freePhysicalMemorySize * 100.0 / osMXBean.totalPhysicalMemorySize
+            usage.swapSpace = osMXBean.freeSwapSpaceSize * 100.0 / osMXBean.totalSwapSpaceSize
+            usage.isUsageRefreshed = true
+
+//            info("${osMXBean.freePhysicalMemorySize}, ${osMXBean.totalPhysicalMemorySize}, ${osMXBean.freeSwapSpaceSize}, ${osMXBean.totalSwapSpaceSize}")
+//            info(usage.format())
 
             val painted = usagePanelSet.any { it.update() }
             if (painted) {
@@ -51,10 +53,10 @@ object UsageMonitor {
         } catch (e: Throwable) {
             if (e is Exception) {
                 if (broken) {
-                    logger.error(e)
+                    info(e.stackTraceToString())
                     throw e
                 } else {
-                    logger.info(e)
+                    info(e.stackTraceToString())
                     broken = true
                     try {
                         Thread.sleep(1000L)
@@ -63,7 +65,7 @@ object UsageMonitor {
                     }
                 }
             } else {
-                logger.error(e)
+                info(e.stackTraceToString())
                 throw e
             }
         }

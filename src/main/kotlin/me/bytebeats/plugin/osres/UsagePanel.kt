@@ -20,7 +20,7 @@ import com.intellij.util.ui.JBUI
 import com.intellij.util.ui.UIUtil
 import com.intellij.util.ui.update.Activatable
 import com.intellij.util.ui.update.UiNotifyConnector
-import me.bytebeats.plugin.osres.model.Usage
+import me.bytebeats.plugin.osres.util.info
 import org.apache.commons.lang.builder.ToStringBuilder
 import java.awt.*
 import java.awt.event.MouseAdapter
@@ -29,20 +29,18 @@ import java.awt.image.BufferedImage
 import javax.swing.BorderFactory
 import javax.swing.JButton
 import javax.swing.JComponent
+import javax.swing.JLabel
 
-class UsagePanel(val project: Project, private val projectName: String = project.name) : JButton(),
+class UsagePanel(private val project: Project, private val projectName: String = project.name) : JButton(),
     CustomStatusBarWidget {
     private lateinit var systemColor: Color
     private lateinit var ideColor: Color
 
     @Volatile
-    private var lastUsage: Usage = Usage()
-
-    @Volatile
     private var lastBufferedImage: Image? = null
 
     @Volatile
-    private var isPressed: Boolean = false
+    private var lastPressed: Boolean = false
 
     init {
         refreshColors()
@@ -76,6 +74,25 @@ class UsagePanel(val project: Project, private val projectName: String = project
                     val dimen = popup.content.preferredSize
                     val at = Point(0, -dimen.height)
                     popup.show(RelativePoint(e.component, at))
+                }
+            }
+
+            override fun mouseEntered(e: MouseEvent?) {
+                if (e != null) {
+                    val content = JLabel(UsageMonitor.osSummary.toString())
+                    val dimen = content.size
+                    info("dimen: ${dimen.width}, ${dimen.height}")
+                    if (dimen.width < 0 || dimen.height < 0) {
+                        return
+                    }
+                    info("popup")
+                    val at = Point(0, -dimen.height)
+                    JBPopupFactory.getInstance()
+                        .createComponentPopupBuilder(content, null)
+                        .setMovable(true)
+                        .setRequestFocus(true)
+                        .createPopup()
+                        .show(RelativePoint.fromScreen(at))
                 }
             }
         })
@@ -116,8 +133,8 @@ class UsagePanel(val project: Project, private val projectName: String = project
 
     override fun paintComponent(g: Graphics?) {
         val pressed = getModel().isPressed
-        val changed = isPressed != pressed
-        isPressed = pressed
+        val changed = lastPressed != pressed
+        lastPressed = pressed
         var bufferedImage = lastBufferedImage
         if (bufferedImage == null || changed) {
             if (size.width < 0 || size.height < 0) {
@@ -126,7 +143,7 @@ class UsagePanel(val project: Project, private val projectName: String = project
             bufferedImage = ImageUtil.createImage(g, size.width, size.height, BufferedImage.TYPE_INT_ARGB)
             val g2 = bufferedImage.graphics.create() as Graphics2D
             val max = 100
-            val otherProcessCpuLoad = lastUsage.systemCpu - lastUsage.processCpu
+            val otherProcessCpuLoad = UsageMonitor.usage.systemCpu - UsageMonitor.usage.processCpu
             val totalBarLength = size.width - insets.left - insets.right - 3
             val processCpuBarLength = totalBarLength * UsageMonitor.usage.processCpu / max
             val otherProcessCpuBarLength = totalBarLength * otherProcessCpuLoad / max
@@ -134,6 +151,7 @@ class UsagePanel(val project: Project, private val projectName: String = project
             val barHeight = size.height.coerceAtLeast(font.size + 2)
             val yOffset = (size.height - barHeight) / 2
             val xOffset = insets.left
+
             //background
             g2.color = UIUtil.getPanelBackground()
             g2.fillRect(0, 0, size.width, size.height)
@@ -191,6 +209,7 @@ class UsagePanel(val project: Project, private val projectName: String = project
 
     override fun getMaximumSize(): Dimension = preferredSize
 
+    @Synchronized
     private fun draw(g: Graphics, bufferedImage: Image) {
         UIUtil.drawImage(g, bufferedImage, 0, 0, null)
         if (JreHiDpiUtil.isJreHiDPI(g as Graphics2D) && !UIUtil.isUnderDarcula()) {
@@ -204,18 +223,11 @@ class UsagePanel(val project: Project, private val projectName: String = project
         }
     }
 
-    fun setShown(shown: Boolean) {
-        if (shown != isVisible) {
-            isVisible = shown
-            revalidate()
-        }
-    }
-
     fun update(): Boolean {
         var painted = false
         if (isShowing) {
-            if (lastUsage != UsageMonitor.usage) {
-                lastUsage = UsageMonitor.usage
+            if (UsageMonitor.usage.isUsageRefreshed) {
+                UsageMonitor.usage.isUsageRefreshed = false
                 lastBufferedImage = null
                 graphics?.let {
                     paint(it)
@@ -231,7 +243,7 @@ class UsagePanel(val project: Project, private val projectName: String = project
     companion object {
         private const val WIDGET_ID = "me.bytebeats.plugin.osres.UsagePanel"
         private const val RESOURCE_USAGE_SAMPLE = "Cpu: 87.5% / 87.5%; Memory: 87.5%; Swap: 87.5%"
-        const val RESOURCE_USAGE_SAMPLING_FORMATTER = "Cpu: %3.1f% / %3.1f%; Memory: %3.1f%; Swap: %3.1f%"
+        const val RESOURCE_USAGE_SAMPLING_FORMATTER = "Cpu: %3.1f%% / %3.1f%%; Memory: %3.1f%%; Swap: %3.1f%%"
         private val widgetFont = JBUI.Fonts.label(11F)
     }
 }

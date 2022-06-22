@@ -22,9 +22,9 @@ public class PerformanceMonitorForm {
     private JLabel providerLabel;
 
 
-    private final RegistryValue ATTEMPTS = Registry.get("performance.monitor.unresponsive.max.attempts.before.log");
-    private final RegistryValue UNRESPONSIVE_INTERVAL_MS = Registry.get("performance.monitor.unresponsive.interval.ms");
-    private final RegistryValue SAMPLING_INTERVAL_MS = Registry.get("performance.monitor.sampling.interval.ms");
+    private final RegistryValue ATTEMPTS = Registry.get("performance.watcher.unresponsive.max.attempts.before.log");
+    private final RegistryValue UNRESPONSIVE_INTERVAL_MS = Registry.get("performance.watcher.unresponsive.interval.ms");
+    private final RegistryValue SAMPLING_INTERVAL_MS = Registry.get("performance.watcher.sampling.interval.ms");
 
 
     public PerformanceMonitorForm() {
