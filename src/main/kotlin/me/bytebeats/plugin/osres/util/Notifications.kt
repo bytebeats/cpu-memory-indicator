@@ -5,7 +5,7 @@ import com.intellij.notification.NotificationType
 import com.intellij.openapi.project.ex.ProjectManagerEx
 
 
-private const val NOTIFICATION_TITLE = "OS Resource Monitor"
+private const val NOTIFICATION_TITLE = "Cpu Memory Indicator"
 private val LOG_NOTIFICATION_GROUP = NotificationGroup.logOnlyGroup("$NOTIFICATION_TITLE Log")
 private val BALLOON_NOTIFICATION_GROUP = NotificationGroup.balloonGroup("$NOTIFICATION_TITLE Balloon")
 private val TOOL_WINDOW_NOTIFICATION_GROUP =

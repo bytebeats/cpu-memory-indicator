@@ -1,7 +1,7 @@
 <!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
 <idea-plugin>
     <id>me.bytebeats.plugin.osres</id>
-    <name>Resource Monitor</name>
+    <name>Cpu Memory Indicator</name>
     <vendor email="happychinapc@gmail.com" url="https://github.com/bytebeats">bytebeats</vendor>
     <version>0.1.0</version>
     <idea-version since-build="212"/>
@@ -21,20 +21,20 @@
     <depends>com.intellij.modules.platform</depends>
 
     <extensions defaultExtensionNs="com.intellij">
-        <applicationConfigurable id="PerformanceMonitorSettings" displayName="Cpu&amp;Memory Indicator"
+        <applicationConfigurable id="PerformanceMonitorSettings" displayName="Cpu &amp; Memory Indicator"
                                  instance="me.bytebeats.plugin.osres.ui.PerformanceMonitorSettingsConfigurable"/>
         <statusBarWidgetFactory implementation="me.bytebeats.plugin.osres.UsageWidgetFactory" id="UsageWidgetFactory"
                                 order="before memoryUsageWidget"/>
 
-        <notificationGroup displayType="NONE" id="OS Resource Monitor Log"
+        <notificationGroup displayType="NONE" id="Cpu Memory Indicator Log"
                            icon="AllIcons.General.NotificationInfo"
                            isLogByDefault="true"/>
-        <notificationGroup displayType="BALLOON" id="OS Resource Monitor Balloon"
+        <notificationGroup displayType="BALLOON" id="Cpu Memory Indicator Balloon"
                            icon="AllIcons.General.NotificationWarning"
                            isLogByDefault="true"/>
-        <notificationGroup displayType="TOOL_WINDOW" id="OS Resource Monitor Tool Window"
+        <notificationGroup displayType="TOOL_WINDOW" id="Cpu Memory Indicator Tool Window"
                            icon="AllIcons.Plugins.Updated"
-                           toolWindowId="OS Resource Monitor Tool Window"
+                           toolWindowId="Cpu Memory Indicator Tool Window"
                            isLogByDefault="true"/>
     </extensions>
     <actions>

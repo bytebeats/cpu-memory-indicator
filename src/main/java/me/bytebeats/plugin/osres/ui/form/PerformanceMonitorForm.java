@@ -28,7 +28,7 @@ public class PerformanceMonitorForm {
 
 
     public PerformanceMonitorForm() {
-        label.setText("For experts only:\nconfiguration for Performance monitor (IDE's bundled automatic thread dumper for frozen UI)\n - you can configure it to dump even for shorter freezes than is the default 5s.");
+        label.setText("For experts only:\nconfiguration for Performance Monitor (IDE's bundled automatic thread dumper for frozen UI)\n - you can configure it to dump even for shorter freezes than is the default 5s.");
 
         init();
 

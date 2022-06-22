@@ -30,7 +30,7 @@ public class BasicOsInformationDialog extends JDialog {
 
         // call onCancel() on ESCAPE
         contentPane.registerKeyboardAction(e -> onCancel(), KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
-        basicOsInfoLabel.setText(UsageMonitor.INSTANCE.getOsSummary$resource_monitor().format());
+        basicOsInfoLabel.setText(UsageMonitor.INSTANCE.getOsSummary$cpu_memory_indicator().format());
     }
 
     private void onOK() {
