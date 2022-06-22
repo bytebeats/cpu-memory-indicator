@@ -4,7 +4,7 @@
     <name>Resource Monitor</name>
     <vendor email="happychinapc@gmail.com" url="https://github.com/bytebeats">bytebeats</vendor>
     <version>0.1.0</version>
-    <idea-version since-build="2021.2"/>
+    <idea-version since-build="212"/>
 
     <description><![CDATA[
     Cpu&Memory Usage Indicator in the status bar.<br/>
@@ -21,7 +21,10 @@
     <depends>com.intellij.modules.platform</depends>
 
     <extensions defaultExtensionNs="com.intellij">
-
+        <applicationConfigurable id="PerformanceMonitorSettings" displayName="Cpu&amp;Memory Indicator"
+                                 instance="me.bytebeats.plugin.osres.ui.PerformanceMonitorSettingsConfigurable"/>
+        <statusBarWidgetFactory implementation="me.bytebeats.plugin.osres.UsageWidgetFactory" id="UsageWidgetFactory"
+                                order="before memoryUsageWidget"/>
     </extensions>
     <actions>
         <action id="DumpIdeThread" class="me.bytebeats.plugin.osres.action.DumpIdeThreadAction" text="Dump IDE Thread"
