@@ -1,1 +1,1 @@
-rootProject.name = "resource-monitor"
+rootProject.name = "cpu-memory-indicator"
